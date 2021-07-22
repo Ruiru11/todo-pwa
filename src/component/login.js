@@ -16,6 +16,7 @@ import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import axios from "axios";
+import { Redirect, useHistory } from "react-router";
 
 function Copyright() {
   return (
@@ -71,13 +72,20 @@ const useStyles = makeStyles((theme) => ({
     color: "white",
     textAlign: "center",
   },
+  error: {
+    color: "red",
+    fontSize: 22,
+    fontWeight: "bold",
+  },
 }));
 
 export default function SignInSide() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPasscode, setShowPasscode] = useState(false);
-  const [token, setToken] = useState("");
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const history = useHistory();
 
   const options = {
     url: "http://localhost:3000/api/auth/login",
@@ -87,20 +95,39 @@ export default function SignInSide() {
       "Content-Type": "application/json",
     },
     data: {
-      password: "password",
-      email: "te@now.com",
+      password: password,
+      email: email,
     },
   };
 
   const loginCall = () => {
-    axios(options).then((response) => console.log("response",response));
+    axios(options)
+      .then((response) => {
+        var tokenData = response.data.token;
+        var index = tokenData.indexOf(" ");
+        var tokenValue = tokenData.substr(index + 1);
+        localStorage.setItem("todoToken", tokenValue);
+        if (response.status === 200) {
+          history.push("/todo");
+        }
+
+      })
+      .catch((err) => {
+        if (err.response.status === 400) {
+          setError(true);
+          if (err.response.data.email) {
+            setErrorMessage(err.response.data.email);
+          } else if (err.response.data.message) {
+            setErrorMessage(err.response.data.message);
+          }
+        }
+      });
   };
 
   useEffect(() => {
-    loginCall();
+    // loginCall();
   });
 
-  console.log("check value", showPasscode);
   const classes = useStyles();
 
   return (
@@ -164,12 +191,14 @@ export default function SignInSide() {
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
+            {error && <p className={classes.error}>{errorMessage}</p>}
             <Button
-              type="submit"
+              // type="submit"
               fullWidth
               variant="contained"
               color="primary"
               className={classes.submit}
+              onClick={() => loginCall()}
             >
               Sign In
             </Button>
