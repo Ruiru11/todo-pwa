@@ -16,7 +16,7 @@ import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import axios from "axios";
-import { Redirect, useHistory } from "react-router";
+import {  useHistory } from "react-router";
 
 function Copyright() {
   return (
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   },
   image: {
     backgroundImage:
-      "url(https://res.cloudinary.com/dxecwuaqd/image/upload/v1551115721/python_bfmq3m.png)",
+      "url(https://res.cloudinary.com/dxecwuaqd/image/upload/v1550589592/eavpjbggxobhgtywbfuf.jpg)",
     backgroundRepeat: "no-repeat",
     backgroundColor:
       theme.palette.type === "light"

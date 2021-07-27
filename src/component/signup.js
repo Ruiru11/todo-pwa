@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -15,6 +15,8 @@ import VisibilityIcon from "@material-ui/icons/Visibility";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+import axios from "axios";
+import { Redirect, useHistory } from "react-router";
 
 function Copyright() {
   return (
@@ -33,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   },
   image: {
     backgroundImage:
-      "url(https://res.cloudinary.com/dxecwuaqd/image/upload/v1551115721/python_bfmq3m.png)",
+      "url(https://res.cloudinary.com/dxecwuaqd/image/upload/v1615456544/david-norman-nzyBPhGJEcg-unsplash_qyhcjt.jpg)",
     backgroundRepeat: "no-repeat",
     backgroundColor:
       theme.palette.type === "light"
@@ -70,14 +72,82 @@ const useStyles = makeStyles((theme) => ({
     color: "white",
     textAlign: "center",
   },
+  error: {
+    color: "red",
+    fontSize: 22,
+    fontWeight: "bold",
+  },
 }));
 
 export default function SignUpSide() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setconfirmPassword] = useState("");
   const [showPasscode, setShowPasscode] = useState(false);
+  const [username, setUsername] = useState("");
+  const [error, setError] = useState(false);
+  const [errMessage, setErrMessage] = useState("");
+  const history = useHistory();
 
-  console.log("check value", showPasscode);
+  const options = {
+    url: "http://localhost:3000/api/auth/registration",
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    data: {
+      password: password,
+      email: email,
+      passwordConfirm: confirmPassword,
+      username: username,
+    },
+  };
+  // password
+  const signUpAction = () => {
+    axios(options)
+      .then((res) => {
+        console.log("res",res)
+        if (res.status === 200 && res.data.status) {
+          history.push("/login");
+        }
+        if (res.data.message) {
+          setError(true);
+          setErrMessage(res.data.message);
+        }
+      })
+      .catch((err) => {
+        if (err.response.data.email) {
+          setError(true);
+          setErrMessage(err.response.data.email);
+        }
+        if (err.response.data.passwordConfirm) {
+          setError(true);
+          setErrMessage(err.response.data.passwordConfirm);
+        }
+        if (err.response.data.password) {
+          setError(true);
+          setErrMessage(err.response.data.password);
+        }
+        if (err.response.data.message) {
+          setError(true);
+          setErrMessage(err.response.data.password);
+        }
+      });
+  };
+
+  const toggleButton = () => {
+    let status = true;
+    if (password && confirmPassword && username && email && password===confirmPassword ) {
+      status = false;
+    }
+    return status;
+  };
+
+  useEffect(() => {
+    toggleButton();
+  });
+
   const classes = useStyles();
 
   return (
@@ -106,7 +176,7 @@ export default function SignUpSide() {
               autoFocus
               onChange={(e) => setEmail(e.target.value)}
             />
-             <TextField
+            <TextField
               variant="outlined"
               margin="normal"
               required
@@ -114,11 +184,12 @@ export default function SignUpSide() {
               id="username"
               label="username"
               name="email"
-              value={email}
+              value={username}
               autoComplete="username"
               autoFocus
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setUsername(e.target.value)}
             />
+            {/* {error && <p className={classes.error}>{errMessage}</p>} */}
             <TextField
               variant="outlined"
               margin="normal"
@@ -127,6 +198,7 @@ export default function SignUpSide() {
               name="password"
               label="Password"
               value={password}
+              onChange={(e) => setPassword(e.target.value)}
               type={showPasscode ? "text" : "password"}
               id="password"
               // autoComplete="current-password"
@@ -157,7 +229,8 @@ export default function SignUpSide() {
               fullWidth
               name="Confirm password"
               label="Confirm Password"
-              value={password}
+              value={confirmPassword}
+              onChange={(e) => setconfirmPassword(e.target.value)}
               type={showPasscode ? "text" : "password"}
               id="Confirm password"
               // autoComplete="current-password"
@@ -179,18 +252,20 @@ export default function SignUpSide() {
                   </InputAdornment>
                 ),
               }}
-              onChange={(e) => setPassword(e.target.value)}
+              // onChange={(e) => setPassword(e.target.value)}
             />
+            {error && <p className={classes.error}>{errMessage}</p>}
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
             <Button
-              type="submit"
               fullWidth
               variant="contained"
               color="primary"
               className={classes.submit}
+              onClick={() => signUpAction()}
+              disabled={toggleButton()}
             >
               Sign In
             </Button>
