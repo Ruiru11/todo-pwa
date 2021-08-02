@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
+import { setup } from "goober";
 import SignInSide from "./component/login";
 import SignUpSide from "./component/signup";
-import ViewTodo from "./component/todo";
+import ViewTodo from "./component/todo/todo";
 import "./App.css";
+import { HomeContainer } from "./component/todo/styles";
+
+setup(React.createElement)
 
 function App() {
   // const [token, setToken] = useState();
@@ -25,7 +29,7 @@ function App() {
 
   console.log(tokenValue)
   return (
-    <div className="App">
+    <HomeContainer>
       <Router>
         <div>
           {tokenValue !==null &&  <nav>
@@ -65,7 +69,7 @@ function App() {
           </Switch>
         </div>
       </Router>
-    </div>
+    </HomeContainer>
   );
 }
 
