@@ -36,6 +36,20 @@ const button = css`
   margin: 8px;
 `;
 
+const actionButtons = css`
+ background: #000272;
+ border-radius: 8px;
+ border: none;
+ outline: none;
+ margin: 8px;
+`
+
+const actionBtnText = css`
+  color:  #FF6363;
+  font-family: "Poller One", cursive;
+  font-family: Poller One;
+`
+
 const buttonText = css`
   color: #000272;
   font-family: "Poller One", cursive;
@@ -119,6 +133,70 @@ p{
 }
 `
 
+const modalContainer = css`
+ background:white;
+ width:100%;
+ min-width:260px;
+ height:100%;
+ min-height:150px;
+ max-height:280px;
+ max-width:300px;
+ margin:30px auto;
+ border-radius: 16px;
+ padding: 28px 32px 32px 32px;
+ position:absolute;
+ bottom:380px;
+ right:50px;
+
+
+ 
+ 
+ input,textarea {
+  border:none;
+  outline:none;
+  width:80%;
+  height:auto;
+  padding:4px;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  font-family: "Noto Sana", sans-serif;
+  resize:none;
+  margin:16px 0px;
+  color: #A32F80;
+  
+
+  &::placeholder {
+    font-size: 14px;
+    font-family: "Noto Sana", sans-serif;
+    color: #341677;
+  }
+
+}
+`
+
+const modalHeader = css`
+display: grid;
+grid-template-columns: 1fr auto;
+grid-template-rows: auto;
+grid-column-gap: 8px;
+grid-row-gap: 0px;
+align-items:center;
+place-items:center;
+
+
+p{
+  color:#FF6363;
+
+}
+`
+
+const closeButton = css`
+  ouline:none;
+  border:none;
+  background:none;
+`
+
 
 export default function ViewTodo() {
   return (
@@ -153,6 +231,30 @@ export default function ViewTodo() {
               <img src="https://pbs.twimg.com/profile_images/1116257631981666305/-3z2O_Mt_400x400.png" />
               <p>by <a href="https://twitter.com/erastusae" target="_blank">Erastus Ruiru</a></p>
             </div>
+            </div>
+            <div className={modalContainer}>
+              <div className={modalHeader}> 
+              <p>Todo Actions</p>
+              <button className={closeButton}>
+              ❌
+              </button>
+              </div>
+            <input 
+            placeholder="Task Title"
+            />
+            <textarea placeholder="Task Description" />
+            <input 
+            placeholder="Duration"
+            />
+            <div className={buttonWrapper}>
+
+          <button className={actionButtons}>
+            <p className={actionBtnText}>✒️ Save Changes</p>
+          </button>
+          <button className={actionButtons}>
+            <p className={actionBtnText}>🗑️ Delete</p>
+          </button>
+        </div>
             </div>
     </>
   );
