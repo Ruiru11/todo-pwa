@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
 import { setup } from "goober";
 import SignInSide from "./component/login";
@@ -10,13 +10,10 @@ import { HomeContainer } from "./component/todo/styles";
 setup(React.createElement)
 
 function App() {
-  // const [token, setToken] = useState();
 
   const tokenValue = localStorage.getItem("todoToken")
+  console.log("check token",!tokenValue)
 
-  // if(tokenValue.length > 10){
-  //   setToken(tokenValue)
-  // }
 
   if (!tokenValue) {
     <div className="App">
@@ -32,20 +29,17 @@ function App() {
     <HomeContainer>
       <Router>
         <div>
-          {tokenValue !==null &&  <nav>
+          {tokenValue  &&  <nav>
             <ul>
-              {/* <li>
+               {/* <li>
                 <Link to="/login">Login</Link>
               </li>
               <li>
                 <Link to="/signup">Sign up</Link>
-              </li> */}
-              <li>
+              </li>  */}
+              {/* <li>
                 <Link to="/todo">todo</Link>
-              </li>
-              <li>
-                <Link to="/">todo</Link>
-              </li>
+              </li> */}
               {/* <li>
                 <Link to="/users">Users</Link>
               </li> */}
@@ -61,9 +55,6 @@ function App() {
               <SignInSide />
             </Route>
             <Route path="/todo">
-              <ViewTodo />
-            </Route>
-            <Route path="/">
               <ViewTodo />
             </Route>
           </Switch>

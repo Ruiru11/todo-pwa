@@ -1,7 +1,7 @@
 import { styled } from "goober";
 
 export const HomeContainer = styled("section")`
-  background: #ff6363;
+  background: #ff6363 !important;
   height: ${window.innerHeight};
   widht: 100vw;
 `;
