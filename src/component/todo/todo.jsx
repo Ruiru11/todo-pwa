@@ -145,7 +145,8 @@ const modalContainer = css`
  border-radius: 16px;
  padding: 28px 32px 32px 32px;
  position:absolute;
- bottom:380px;
+ bottom:50%;
+ transform:translate(0%,50%);
  right:50px;
 
 
