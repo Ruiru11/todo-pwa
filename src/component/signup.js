@@ -16,7 +16,7 @@ import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import axios from "axios";
-import { Redirect, useHistory } from "react-router";
+import { useHistory } from "react-router";
 
 function Copyright() {
   return (
@@ -107,7 +107,7 @@ export default function SignUpSide() {
   const signUpAction = () => {
     axios(options)
       .then((res) => {
-        console.log("res",res)
+        console.log("res", res);
         if (res.status === 200 && res.data.status) {
           history.push("/login");
         }
@@ -138,7 +138,13 @@ export default function SignUpSide() {
 
   const toggleButton = () => {
     let status = true;
-    if (password && confirmPassword && username && email && password===confirmPassword ) {
+    if (
+      password &&
+      confirmPassword &&
+      username &&
+      email &&
+      password === confirmPassword
+    ) {
       status = false;
     }
     return status;
@@ -220,7 +226,6 @@ export default function SignUpSide() {
                   </InputAdornment>
                 ),
               }}
-              onChange={(e) => setPassword(e.target.value)}
             />
             <TextField
               variant="outlined"
