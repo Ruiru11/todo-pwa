@@ -1,6 +1,17 @@
 import React, { useState } from "react";
 import Checkbox from "./checkbox";
-import { ListContainer, ListContent, ListItem, ListItems } from "./styles";
+import {
+  ListContainer,
+  ListContent,
+  ListItem,
+  ListItems,
+  modalContainer,
+  modalHeader,
+  buttonWrapper,
+  actionButtons,
+  actionBtnText,
+  closeButton,
+} from "./styles";
 import axios from "axios";
 import { useEffect } from "react";
 import { ReactComponent as ReactLogo } from "../../box.svg";
@@ -8,6 +19,13 @@ import { ReactComponent as ReactLogo } from "../../box.svg";
 export default function TodoList() {
   const [load, setLoading] = useState(true);
   const [todoData, setData] = useState([]);
+  const [actionSheet, setActionSheet] = useState(false);
+  const [singleItem, setSingleItem] = useState({});
+
+  const onClickItem = (data) => {
+    setActionSheet(true);
+    setSingleItem(data);
+  };
 
   const options = {
     url: "http://localhost:3000/api/todos",
@@ -24,7 +42,6 @@ export default function TodoList() {
       .then((res) => {
         if (res.status === 200) {
           setLoading(() => false);
-
           setData((prev) => [...prev, ...res.data.todos]);
         }
       })
@@ -33,8 +50,11 @@ export default function TodoList() {
       });
   };
 
+  console.log("data", singleItem, Object.keys(singleItem).length > 0);
+
   useEffect(() => {
     fetchData();
+    console.log("data", singleItem);
   }, []);
 
   return (
@@ -68,17 +88,40 @@ export default function TodoList() {
         Array.isArray(todoData) &&
         todoData.length > 0 &&
         todoData.map((data) => (
-          <ListItems>
+          <ListItems key={data._id}>
             <ListItem>
-              <Checkbox checked={true} onChecked={() => {}} uniqueID={1} />
+              <Checkbox
+                checked={data.completed}
+                onChecked={() => {}}
+                uniqueID={1}
+              />
               <ListContent>
-                <h2>{data.task}</h2>
+                <h2 onClick={() => onClickItem(data)}>{data.task}</h2>
                 <p>{data.description}</p>
                 <p>{data.duration}</p>
               </ListContent>
             </ListItem>
           </ListItems>
         ))
+      )}
+      {actionSheet && Object.keys(singleItem).length > 0 && (
+        <div className={modalContainer}>
+          <div className={modalHeader}>
+            <p>Todo Actions</p>
+            <button onClick={() => setActionSheet(false)} className={closeButton}>❌</button>
+          </div>
+          <input placeholder="Task Title" value={singleItem.task} readOnly/>
+          <textarea placeholder="Task Description" value={singleItem.description} readOnly />
+          <input placeholder="Duration" value={singleItem.duration} readOnly />
+          <div className={buttonWrapper}>
+            <button className={actionButtons}>
+              <p className={actionBtnText}>✒️ Save Changes</p>
+            </button>
+            <button className={actionButtons}>
+              <p className={actionBtnText}>🗑️ Delete</p>
+            </button>
+          </div>
+        </div>
       )}
     </ListContainer>
   );
